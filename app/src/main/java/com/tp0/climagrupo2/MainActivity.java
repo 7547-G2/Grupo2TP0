@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** Called when the user taps the cities button */
     public void selectCity(View view) {
-        Intent intent = new Intent(this, CitiesActivity.class);
+        Intent intent = new Intent(this, CityActivity.class);
         startActivity(intent);
 
     }
