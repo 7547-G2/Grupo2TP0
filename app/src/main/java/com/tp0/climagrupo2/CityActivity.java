@@ -1,6 +1,8 @@
 package com.tp0.climagrupo2;
 
 import android.app.ActionBar;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -48,8 +50,6 @@ public class CityActivity extends AppCompatActivity {
                 JSONObject json_data = jArray.getJSONObject(i);
                 city = json_data.getString("city");
                 country = json_data.getString("country");
-                System.out.println("city: " + city);
-                System.out.println("country: " + country);
                 City elem = new City(json_data.getInt("id"), city, country);
                 cities2.add(elem);
                 cities3.add(city + ", " + country);
@@ -67,8 +67,12 @@ public class CityActivity extends AppCompatActivity {
         lvCities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("pos: " + position);
+                String cad = String.valueOf(cities2.get(position).getId());
                 System.out.println("id: " + cities2.get(position).getId());
+                Intent data = new Intent();
+                data.setData(Uri.parse(cad));
+                setResult(RESULT_OK, data);
+                finish();
             }
         });
     }
