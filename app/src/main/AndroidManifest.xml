@@ -16,10 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CityActivity">
+        <activity android:name="com.tp0.climagrupo2.CityActivity">
+            android:parentActivityName="com.tp0.climagrupo2.MainActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tp0.climagrupo2.MainActivity" />
+
         </activity>
     </application>
 
