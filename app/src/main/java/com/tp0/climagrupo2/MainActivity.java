@@ -1,39 +1,32 @@
 package com.tp0.climagrupo2;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     int cityCode = 000;
     String BASE_URI = "http://api.openweathermap.org/data/2.5/forecast?";
-
+    List<Integer> tempList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         } else {
             setContentView(R.layout.activity_main);
+            String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
+            volleyJsonObjectRequest(url);
             loadTable();
         }
 
@@ -83,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("codigo: " + data.getDataString());
             String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);
+
             loadTable();
 
         }
@@ -117,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response.toString());
+                        parseResponse(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -126,5 +123,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Adding JsonObject request to request queue
         AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectReq,REQUEST_TAG);
+    }
+
+    private void parseResponse(JSONObject response) {
+        try {
+            String city = response.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
