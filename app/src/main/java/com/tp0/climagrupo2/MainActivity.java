@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     int cityCode = 000;
     String BASE_URI = "http://api.openweathermap.org/data/2.5/forecast?";
-    TextView tmp1d, tmp1n, tmp2d, tmp2n, tmp3d, tmp3n, tmp4d, tmp4n, tmp5d, tmp5n;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("codigo: " + data.getDataString());
             String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);
+            loadTable();
 
         }
     }
@@ -92,9 +93,14 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
 
         TableLayout tblAddLayout = (TableLayout) findViewById(R.id.tableLayout);
+        TextView tempDay, tempNight;
 
         for (int i=0;i<5;i++){
             View tr = inflater.inflate(R.layout.table_row, null);
+            tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
+            tempDay.setText(String.valueOf(15+i) + "°C");
+            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
+            tempNight.setText(String.valueOf(10+i)+ "°C");
             tblAddLayout.addView(tr);
         }
 
