@@ -33,6 +33,8 @@ public class CityActivity extends AppCompatActivity {
     //ArrayList for listview
     ArrayList<String>  data=new ArrayList<String>();
 
+    public static String MyStaticString;
+
     //Edittext for search
     EditText searchdata;
 
@@ -57,7 +59,7 @@ public class CityActivity extends AppCompatActivity {
         }
 
         final List<City> cities2 = new ArrayList();
-        List<String> cities3 = new ArrayList<String>();
+        final List<String> cities3 = new ArrayList<String>();
         String city, country;
         for(int i=0;i<jArray.length();i++){
             try {
@@ -103,6 +105,7 @@ public class CityActivity extends AppCompatActivity {
                 Intent data = new Intent();
                 data.setData(Uri.parse(cad));
                 setResult(RESULT_OK, data);
+                MyStaticString = String.valueOf(cities3.get(position));
                 finish();
             }
         });

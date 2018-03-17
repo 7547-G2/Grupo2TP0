@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         if ((requestCode == cityCode) && (resultCode == RESULT_OK)){
+            TextView tvCity = (TextView)findViewById(R.id.tvCity);
+            if (CityActivity.MyStaticString != null && !CityActivity.MyStaticString.equals(""))
+                tvCity.setText(CityActivity.MyStaticString);
             System.out.println("codigo: " + data.getDataString());
             String url = "http://api.openweathermap.org/data/2.5/forecast?id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);
