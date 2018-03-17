@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (!isOnline()){
+            //TODO: mostrasr fondo vacio en este caso
             Context context = getApplicationContext();
             CharSequence text = "No fue posible conectarse al servidor, por favor reintente más tarde";
             int duration = Toast.LENGTH_LONG;
@@ -56,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, cityCode);
     }
 
+    public void refreshWeather(View view) {
+        if (!isOnline()){
+            Context context = getApplicationContext();
+            CharSequence text = "No fue posible conectarse al servidor, por favor reintente más tarde";
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+            toast.show();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
@@ -68,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void volleyJsonObjectRequest(String url){
 
-        String  REQUEST_TAG = "com.androidtutorialpoint.volleyJsonObjectRequest";
+        String  REQUEST_TAG = "com.tp0.climagrupo2.volleyJsonObjectRequest";
 
         JsonObjectRequest jsonObjectReq = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
