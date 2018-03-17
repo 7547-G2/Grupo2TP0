@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
 
         TableLayout tblAddLayout = (TableLayout) findViewById(R.id.tableLayout);
+        tblAddLayout.removeAllViews();
         TextView tempDay, tempNight;
 
         for (int i=0;i<5;i++){
