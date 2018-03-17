@@ -1,6 +1,5 @@
 package com.tp0.climagrupo2;
 
-import com.schulz.javier.R;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
