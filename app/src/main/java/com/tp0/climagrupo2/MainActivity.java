@@ -13,6 +13,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +26,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    int cityCode = 101;
+    int cityCode = 000;
+    String BASE_URI = "http://api.openweathermap.org/data/2.5/forecast?";
+    TextView tmp1d, tmp1n, tmp2d, tmp2n, tmp3d, tmp3n, tmp4d, tmp4n, tmp5d, tmp5n;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         } else {
             setContentView(R.layout.activity_main);
+            loadTable();
         }
 
     }
@@ -70,15 +79,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         if ((requestCode == cityCode) && (resultCode == RESULT_OK)){
             TextView tvCity = (TextView)findViewById(R.id.tvCity);
             if (CityActivity.MyStaticString != null && !CityActivity.MyStaticString.equals(""))
                 tvCity.setText(CityActivity.MyStaticString);
+            // TODO Obtener el id de la ciudad desde la BD
             System.out.println("codigo: " + data.getDataString());
-            String url = "http://api.openweathermap.org/data/2.5/forecast?id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
+            String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);
+
         }
+    }
+
+    private void loadTable() {
+
+        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+
+        TableLayout tblAddLayout = (TableLayout) findViewById(R.id.tableLayout);
+
+        for (int i=0;i<5;i++){
+            View tr = inflater.inflate(R.layout.table_row, null);
+            tblAddLayout.addView(tr);
+        }
+
+
     }
 
     public void volleyJsonObjectRequest(String url){
