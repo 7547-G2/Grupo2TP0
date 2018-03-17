@@ -1,16 +1,21 @@
 package com.tp0.climagrupo2;
 
+import com.schulz.javier.R;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +28,15 @@ public class CityActivity extends AppCompatActivity {
 
     ListView lvCities;
 
+    //Adapter for listview
+    ArrayAdapter<String> adapter;
+
+    //ArrayList for listview
+    ArrayList<String>  data=new ArrayList<String>();
+
+    //Edittext for search
+    EditText searchdata;
+
     String[] cities = new String[]{"Buenos Aires, AR", "Mar del Plata, AR", "Montevideo, UR"};
 
     String jsonInput = "[{\"id\": 101, \"city\": \"Buenos Aires\", \"country\": \"AR\"}, " +
@@ -34,6 +48,7 @@ public class CityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city);
         lvCities = (ListView)findViewById(R.id.cityList);
+        searchdata=(EditText)findViewById(R.id.txtFilter);
 
         JSONArray jArray = null;
         try {
@@ -60,9 +75,26 @@ public class CityActivity extends AppCompatActivity {
 
         String[] simpleArray = new String[ cities3.size() ];
         cities3.toArray(simpleArray);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, simpleArray);
+        //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, simpleArray);
+
+        adapter=new ArrayAdapter<String>(this,R.layout.searchresults,R.id.results,simpleArray);
 
         lvCities.setAdapter(adapter);
+
+        searchdata.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                CityActivity.this.adapter.getFilter().filter(s);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
 
         lvCities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -76,7 +108,6 @@ public class CityActivity extends AppCompatActivity {
             }
         });
     }
-
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:

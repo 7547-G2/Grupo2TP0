@@ -7,7 +7,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.tp0.climagrupo2.CityActivity">
-
+    <EditText
+        android:id="@+id/txtFilter"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:hint="search"/>
     <ListView
         android:id="@+id/cityList"
         android:layout_width="match_parent"
