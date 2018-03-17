@@ -83,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
             TextView tvCity = (TextView)findViewById(R.id.tvCity);
             if (CityActivity.MyStaticString != null && !CityActivity.MyStaticString.equals(""))
                 tvCity.setText(CityActivity.MyStaticString);
-            // TODO Obtener el id de la ciudad desde la BD
             System.out.println("codigo: " + data.getDataString());
             String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);
+            loadTable();
 
         }
     }
@@ -96,9 +96,14 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
 
         TableLayout tblAddLayout = (TableLayout) findViewById(R.id.tableLayout);
+        TextView tempDay, tempNight;
 
         for (int i=0;i<5;i++){
             View tr = inflater.inflate(R.layout.table_row, null);
+            tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
+            tempDay.setText(String.valueOf(15+i) + "°C");
+            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
+            tempNight.setText(String.valueOf(10+i)+ "°C");
             tblAddLayout.addView(tr);
         }
 
