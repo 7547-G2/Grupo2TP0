@@ -31,15 +31,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         if (!isOnline()){
-            //TODO: mostrasr fondo vacio en este caso
             Context context = getApplicationContext();
             CharSequence text = "No fue posible conectarse al servidor, por favor reintente más tarde";
             int duration = Toast.LENGTH_LONG;
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
+        } else {
+            setContentView(R.layout.activity_main);
         }
 
     }
