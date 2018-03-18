@@ -2,6 +2,7 @@ package com.tp0.climagrupo2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,12 +18,15 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     String BASE_URI = "http://api.openweathermap.org/data/2.5/forecast?";
     List<ResponseInfo> tempList = new ArrayList<>();
 
-    String mocker = "{\"id\": 707860,\"name\": \"Hurzuf\",\"country\": \"UA\",\"info\": [{\"date\": \"2018-03-18\",\"dayTemp\": 15,\"nightTemp\": 10},{\"date\": \"2018-03-19\",\"dayTemp\": 16, \"nightTemp\": 11}" +
-            ",{\"date\": \"2018-03-20\",\"dayTemp\": 17, \"nightTemp\": 12},{\"date\": \"2018-03-21\",\"dayTemp\": 18, \"nightTemp\": 13}" +
-            ",{\"date\": \"2018-03-22\",\"dayTemp\": 19, \"nightTemp\": 14}]}";
+    String mocker = "{\"id\": 707860,\"name\": \"Hurzuf\",\"country\": \"UA\",\"info\": [{\"date\": \"2018-03-18\",\"dayTemp\": 15,\"nightTemp\": 10,\"dayIcon\":\"01d\",\"nightIcon\":\"01n\"},{\"date\": \"2018-03-19\",\"dayTemp\": 16, \"nightTemp\": 11,\"dayIcon\":\"01d\",\"nightIcon\":\"01n\"}" +
+            ",{\"date\": \"2018-03-20\",\"dayTemp\": 17, \"nightTemp\": 12,\"dayIcon\":\"01d\",\"nightIcon\":\"01n\"},{\"date\": \"2018-03-21\",\"dayTemp\": 18, \"nightTemp\": 13,\"dayIcon\":\"01d\",\"nightIcon\":\"01n\"}" +
+            ",{\"date\": \"2018-03-22\",\"dayTemp\": 19, \"nightTemp\": 14,\"dayIcon\":\"01d\",\"nightIcon\":\"01n\"}]}";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         TableLayout tblAddLayout = (TableLayout) findViewById(R.id.tableLayout);
         tblAddLayout.removeAllViews();
         TextView dayName, tempDay, tempNight;
+        ImageView dayIcon, nightIcon;
         String day = "";
         for (int i=0;i<5;i++){
             View tr = inflater.inflate(R.layout.table_row, null);
@@ -138,6 +144,24 @@ public class MainActivity extends AppCompatActivity {
             dayName.setText(day);
             tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
             tempDay.setText(tempList.get(i).getDayTemp().toString() + "°C");
+            dayIcon = (ImageView) tr.findViewById(R.id.ivDay);
+            nightIcon = (ImageView) tr.findViewById(R.id.ivNight);
+            URL iconurl = null;
+            try {
+                iconurl = new URL(tempList.get(i).getDayIcon());
+
+                Glide.with(this).load(iconurl).into(dayIcon);
+                iconurl = new URL(tempList.get(i).getNightIcon());
+                Glide.with(this).load(iconurl).into(nightIcon);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            catch (java.io.IOException e) {
+                e.printStackTrace();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
             tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
             tempNight.setText(tempList.get(i).getNightTemp().toString() + "°C");
             tblAddLayout.addView(tr);
@@ -174,13 +198,18 @@ public class MainActivity extends AppCompatActivity {
             JSONArray jsonInfo = response.getJSONArray("info");
             JSONObject aux;
             tempList.clear();
-            String tmp, day;
+            String tmp, day, dayIcon, nightIcon;
+            Integer dayTemp, nightTemp;
             for (int j=0;j<jsonInfo.length();j++){
                 aux = jsonInfo.getJSONObject(j);
                 tmp = aux.getString("date");
                 day = getDay(tmp);
                 day = day + ", " + tmp.substring(8, 10) + "/" + tmp.substring(5, 7);
-                ResponseInfo elem = new ResponseInfo(day, aux.getInt("dayTemp"), aux.getInt("nightTemp"));
+                dayTemp = aux.getInt("dayTemp");
+                nightTemp = aux.getInt("nightTemp");
+                dayIcon = "http://openweathermap.org/img/w/"+aux.getString("dayIcon")+".png";
+                nightIcon = "http://openweathermap.org/img/w/"+aux.getString("nightIcon")+".png";
+                ResponseInfo elem = new ResponseInfo(day, dayTemp, nightTemp,dayIcon,nightIcon);
                 tempList.add(j,elem);
             }
         } catch (JSONException e) {
