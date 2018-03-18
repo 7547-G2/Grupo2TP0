@@ -32,7 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     int cityCode = 000;
-    String BASE_URI = "http://api.openweathermap.org/data/2.5/forecast?";
+    String BASE_URI = "https://grupo2-api-backend.herokuapp.com/weather/";
     List<ResponseInfo> tempList = new ArrayList<>();
 
     String mocker = "{\"id\": 707860,\"name\": \"Hurzuf\",\"country\": \"UA\",\"info\": [{\"date\": \"2018-03-18\",\"dayTemp\": 15,\"nightTemp\": 10},{\"date\": \"2018-03-19\",\"dayTemp\": 16, \"nightTemp\": 11}" +
@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         } else {
             setContentView(R.layout.activity_main);
-            String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
-            volleyJsonObjectRequest(url);
+            // TODO: Load data from data base
             loadTableDefault();
         }
 
@@ -109,10 +108,9 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("ciudad: " + CityActivity.selectedCity);
             if (CityActivity.selectedCity != null && !CityActivity.selectedCity.equals(""))
                 tvCity.setText(CityActivity.selectedCity);
-            System.out.println("codigo: " + data.getDataString());
-            String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
+            //System.out.println("codigo: " + data.getDataString());
+            String url = BASE_URI + data.getDataString();
             volleyJsonObjectRequest(url);
-            loadTable();
         }
     }
 
@@ -137,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
             }
             dayName.setText(day);
             tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
-            tempDay.setText(tempList.get(i).getDayTemp().toString() + "°C");
+            tempDay.setText(tempList.get(i).getDayTemp().toString().substring(0,2) + "°C");
             tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
-            tempNight.setText(tempList.get(i).getNightTemp().toString() + "°C");
+            tempNight.setText(tempList.get(i).getNightTemp().toString().substring(0,2) + "°C");
             tblAddLayout.addView(tr);
         }
     }
@@ -147,11 +145,14 @@ public class MainActivity extends AppCompatActivity {
     public void volleyJsonObjectRequest(String url){
 
         String  REQUEST_TAG = "com.tp0.climagrupo2.volleyJsonObjectRequest";
+        System.out.println("realizando request");
         JsonObjectRequest jsonObjectReq = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        parseResponse(mocker);
+                        System.out.println("respuesta: " + response.toString());
+                        parseResponse(response.toString());
+                        loadTable();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -169,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
             JSONObject response = new JSONObject(response2);
             String city = response.getString("name");
             String country = response.getString("country");
-            //TextView cityName = (TextView) findViewById(R.id.tvCity);
-            //cityName.setText(city + ", " + country);
+            TextView cityName = (TextView) findViewById(R.id.tvCity);
+            cityName.setText(city + ", " + country);
             JSONArray jsonInfo = response.getJSONArray("info");
             JSONObject aux;
             tempList.clear();
