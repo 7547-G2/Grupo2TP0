@@ -34,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +193,12 @@ public class CityActivity extends AppCompatActivity {
         }
 
         String[] simpleArray = new String[ cities3.size() ];
+        Collections.sort(cities2, new Comparator<City>() {
+            public int compare(City c1, City c2) {
+                if (c1.getFullName().compareTo(c2.getFullName()) < 0) return -1;
+                if (c1.getFullName().compareTo(c2.getFullName()) > 0) return 1;
+                return 0;
+            }});
         java.util.Collections.sort(cities3);
         cities3.toArray(simpleArray);
         //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, simpleArray);
