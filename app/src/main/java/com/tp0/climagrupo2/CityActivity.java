@@ -51,6 +51,7 @@ public class CityActivity extends AppCompatActivity {
     ArrayList<String> data = new ArrayList<String>();
 
     public static String selectedCity;
+    public static int selectedCityId;
 
     //Edittext for search
     EditText searchdata;
@@ -116,6 +117,15 @@ public class CityActivity extends AppCompatActivity {
                 data.setData(Uri.parse(cad));
                 setResult(RESULT_OK, data);
                 selectedCity = adapter.getItem(position);
+                City city = new City(0,selectedCity.substring(0,selectedCity.indexOf(',')),"AR");
+
+                for (City c : cities2) {
+                    if (selectedCity.substring(0,selectedCity.indexOf(',')).equals(c.getName())) {
+                        city = c;
+                    }
+                }
+
+                selectedCityId = city.getId();
                 System.out.println("ciudad: " + selectedCity);
                 finish();
             }
