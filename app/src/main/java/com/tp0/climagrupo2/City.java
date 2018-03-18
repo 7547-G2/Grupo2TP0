@@ -41,22 +41,4 @@ public class City {
     }
 
     public String getFullName() {return name + ", " + country;}
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!City.class.isAssignableFrom(obj.getClass())) {
-            return false;
-        }
-        final City other = (City) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        if (this.country != other.country) {
-            return false;
-        }
-        return true;
-    }
 }
