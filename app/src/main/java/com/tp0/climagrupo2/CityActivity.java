@@ -16,22 +16,34 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CityActivity extends AppCompatActivity {
 
+    String BASE_URI = "https://grupo2-api-backend.herokuapp.com/city/country/";
+    String BASE_URI2 = "http://api.openweathermap.org/data/2.5/forecast?";
     ListView lvCities;
 
     //Adapter for listview
     ArrayAdapter<String> adapter;
 
     //ArrayList for listview
-    ArrayList<String>  data=new ArrayList<String>();
+    ArrayList<String> data = new ArrayList<String>();
 
     public static String MyStaticString;
 
@@ -39,6 +51,9 @@ public class CityActivity extends AppCompatActivity {
     EditText searchdata;
 
     String[] cities = new String[]{"Buenos Aires, AR", "Mar del Plata, AR", "Montevideo, UR"};
+
+    final List<City> cities2 = new ArrayList();
+    final List<String> cities3 = new ArrayList<String>();
 
     String jsonInput = "[{\"id\": 101, \"city\": \"Buenos Aires\", \"country\": \"AR\"}, " +
             "{\"id\": 102, \"city\": \"Mar del Plata\", \"country\": \"AR\"}, " +
@@ -48,39 +63,10 @@ public class CityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city);
-        lvCities = (ListView)findViewById(R.id.cityList);
-        searchdata=(EditText)findViewById(R.id.txtFilter);
+        lvCities = (ListView) findViewById(R.id.cityList);
+        searchdata = (EditText) findViewById(R.id.txtFilter);
 
-        JSONArray jArray = null;
-        try {
-            jArray = new JSONArray(jsonInput);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final List<City> cities2 = new ArrayList();
-        final List<String> cities3 = new ArrayList<String>();
-        String city, country;
-        for(int i=0;i<jArray.length();i++){
-            try {
-                JSONObject json_data = jArray.getJSONObject(i);
-                city = json_data.getString("city");
-                country = json_data.getString("country");
-                City elem = new City(json_data.getInt("id"), city, country);
-                cities2.add(elem);
-                cities3.add(city + ", " + country);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        String[] simpleArray = new String[ cities3.size() ];
-        cities3.toArray(simpleArray);
-        //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, simpleArray);
-
-        adapter=new ArrayAdapter<String>(this,R.layout.searchresults,R.id.results,simpleArray);
-
-        lvCities.setAdapter(adapter);
+        volleyJsonObjectRequest(BASE_URI + "AR");
 
         searchdata.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,7 +81,6 @@ public class CityActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-
 
         lvCities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -116,5 +101,67 @@ public class CityActivity extends AppCompatActivity {
                 finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void volleyJsonObjectRequest(String url){
+
+        String REQUEST_TAG = "cities";
+
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        System.out.println(response.toString());
+                        parseResponse(response.toString());
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        System.out.println("error 2: " + error.toString());
+                    }
+                }
+        );
+
+        // Adding JsonObject request to request queue
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrayRequest,REQUEST_TAG);
+    }
+
+    private void parseResponse(String s) {
+
+        JSONArray jArray = null;
+        try {
+            jArray = new JSONArray(s);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String city, country;
+        for(int i=0;i<jArray.length();i++){
+            try {
+                JSONObject json_data = jArray.getJSONObject(i);
+                city = json_data.getString("name");
+                country = json_data.getString("country");
+                City elem = new City(json_data.getInt("id"), city, country);
+                cities2.add(elem);
+                cities3.add(city + ", " + country);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String[] simpleArray = new String[ cities3.size() ];
+        java.util.Collections.sort(cities3);
+        cities3.toArray(simpleArray);
+        //adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, simpleArray);
+
+        adapter=new ArrayAdapter<String>(this,R.layout.searchresults,R.id.results,simpleArray);
+
+        lvCities.setAdapter(adapter);
+
     }
 }

@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
             String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);
             loadTable();
-
         }
     }
 
@@ -145,17 +144,16 @@ public class MainActivity extends AppCompatActivity {
     public void volleyJsonObjectRequest(String url){
 
         String  REQUEST_TAG = "com.tp0.climagrupo2.volleyJsonObjectRequest";
-
         JsonObjectRequest jsonObjectReq = new JsonObjectRequest(url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println(response.toString());
                         parseResponse(mocker);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                System.out.println("error 3: " + error.toString());
             }
         });
 
@@ -185,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println("cantidad: " + tempList.size());
     }
 
     private String getDay(String input) {
@@ -197,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
             DateFormat dayFormate=new SimpleDateFormat("EEEE");
             ret = dayFormate.format(date);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return ret;
