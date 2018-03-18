@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((requestCode == cityCode) && (resultCode == RESULT_OK)){
             TextView tvCity = (TextView)findViewById(R.id.tvCity);
-            System.out.println("ciudad: " + CityActivity.MyStaticString);
-            if (CityActivity.MyStaticString != null && !CityActivity.MyStaticString.equals(""))
-                tvCity.setText(CityActivity.MyStaticString);
+            System.out.println("ciudad: " + CityActivity.selectedCity);
+            if (CityActivity.selectedCity != null && !CityActivity.selectedCity.equals(""))
+                tvCity.setText(CityActivity.selectedCity);
             System.out.println("codigo: " + data.getDataString());
             String url = BASE_URI + "id=3435910&APPID=a7cdafb6e20c8ea2915a3c5bc16da0a3";
             volleyJsonObjectRequest(url);

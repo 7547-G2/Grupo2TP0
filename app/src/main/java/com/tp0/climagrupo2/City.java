@@ -40,4 +40,6 @@ public class City {
         this.country = country;
     }
 
+    public String getFullName() {return name + ", " + country;}
+
 }

@@ -50,7 +50,7 @@ public class CityActivity extends AppCompatActivity {
     //ArrayList for listview
     ArrayList<String> data = new ArrayList<String>();
 
-    public static String MyStaticString;
+    public static String selectedCity;
 
     //Edittext for search
     EditText searchdata;
@@ -115,8 +115,8 @@ public class CityActivity extends AppCompatActivity {
                 Intent data = new Intent();
                 data.setData(Uri.parse(cad));
                 setResult(RESULT_OK, data);
-                MyStaticString = String.valueOf(cities3.get(position));
-                System.out.println("ciudad: " + MyStaticString);
+                selectedCity = adapter.getItem(position);
+                System.out.println("ciudad: " + selectedCity);
                 finish();
             }
         });
