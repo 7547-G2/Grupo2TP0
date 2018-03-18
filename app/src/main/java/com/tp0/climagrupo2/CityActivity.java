@@ -91,6 +91,7 @@ public class CityActivity extends AppCompatActivity {
                 data.setData(Uri.parse(cad));
                 setResult(RESULT_OK, data);
                 MyStaticString = String.valueOf(cities3.get(position));
+                System.out.println("ciudad: " + MyStaticString);
                 finish();
             }
         });

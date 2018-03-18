@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((requestCode == cityCode) && (resultCode == RESULT_OK)){
             TextView tvCity = (TextView)findViewById(R.id.tvCity);
+            System.out.println("ciudad: " + CityActivity.MyStaticString);
             if (CityActivity.MyStaticString != null && !CityActivity.MyStaticString.equals(""))
                 tvCity.setText(CityActivity.MyStaticString);
             System.out.println("codigo: " + data.getDataString());
@@ -168,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
             JSONObject response = new JSONObject(response2);
             String city = response.getString("name");
             String country = response.getString("country");
-            TextView cityName = (TextView) findViewById(R.id.tvCity);
-            cityName.setText(city + ", " + country);
+            //TextView cityName = (TextView) findViewById(R.id.tvCity);
+            //cityName.setText(city + ", " + country);
             JSONArray jsonInfo = response.getJSONArray("info");
             JSONObject aux;
             tempList.clear();
