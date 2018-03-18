@@ -1,6 +1,8 @@
 package com.tp0.climagrupo2;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +10,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -79,6 +84,26 @@ public class CityActivity extends AppCompatActivity {
             }
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+
+        lvCities.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view,
+                                             int scrollState) {
+
+                if (scrollState == 0) {
+                    InputMethodManager inputManager = ( InputMethodManager ) getApplicationContext().getSystemService( Context.INPUT_METHOD_SERVICE );
+                    inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+
+
             }
         });
 
@@ -164,5 +189,19 @@ public class CityActivity extends AppCompatActivity {
 
         lvCities.setAdapter(adapter);
 
+    }
+
+    public static void hideKeyboard(Context context ) {
+
+        try {
+            InputMethodManager inputManager = ( InputMethodManager ) context.getSystemService( Context.INPUT_METHOD_SERVICE );
+
+            View view = ( (Activity) context ).getCurrentFocus();
+            if ( view != null ) {
+                inputManager.hideSoftInputFromWindow( view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS );
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 }
