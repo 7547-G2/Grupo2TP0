@@ -37,6 +37,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     int cityCode = 000;
+    String cityId = "3433955";
     String BASE_URI = "https://grupo2-api-backend.herokuapp.com/weather/";
     List<ResponseInfo> tempList = new ArrayList<>();
 
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_main);
             // TODO: Load data from data base
-            loadTableDefault();
+            String url = BASE_URI + cityId;
+            volleyJsonObjectRequest(url);
         }
 
     }
@@ -103,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
+        } else {
+            String url = BASE_URI + cityId;
+            volleyJsonObjectRequest(url);
         }
     }
 
@@ -114,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
             if (CityActivity.selectedCity != null && !CityActivity.selectedCity.equals(""))
                 tvCity.setText(CityActivity.selectedCity);
             //System.out.println("codigo: " + data.getDataString());
-            String url = BASE_URI + data.getDataString();
+            cityId = data.getDataString();
+            String url = BASE_URI + cityId;
             volleyJsonObjectRequest(url);
         }
     }
@@ -142,12 +148,19 @@ public class MainActivity extends AppCompatActivity {
             }
             dayName.setText(day);
             tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
+            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
             aux = tempList.get(i).getDayTemp();
-            System.out.println("tempdat: " + aux);
+            System.out.println("aux: " + aux);
             if (aux != 99){
                 tempDay.setText(aux.toString().substring(0,2) + "°C");
             } else {
                 tempDay.setText("");
+            }
+            aux = tempList.get(i).getNightTemp();
+            if (aux != 99){
+                tempNight.setText(aux.toString().substring(0,2) + "°C");;
+            } else {
+                tempNight.setText("");
             }
             dayIcon = (ImageView) tr.findViewById(R.id.ivDay);
             nightIcon = (ImageView) tr.findViewById(R.id.ivNight);
@@ -167,8 +180,6 @@ public class MainActivity extends AppCompatActivity {
             catch (Exception e){
                 e.printStackTrace();
             }
-            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
-            tempNight.setText(tempList.get(i).getNightTemp().toString().substring(0,2) + "°C");
             tblAddLayout.addView(tr);
         }
     }
@@ -219,8 +230,13 @@ public class MainActivity extends AppCompatActivity {
                     dayTemp = 99;
                     dayIcon = "";
                 }
-                nightTemp = aux.getInt("nightTemp");
-                nightIcon = "http://openweathermap.org/img/w/"+aux.getString("nightIcon")+".png";
+                if (aux.has("nightTemp")) {
+                    nightTemp = aux.getInt("nightTemp");
+                    nightIcon = "http://openweathermap.org/img/w/"+aux.getString("nightIcon")+".png";
+                } else {
+                    nightTemp = 99;
+                    nightIcon = "";
+                }
                 ResponseInfo elem = new ResponseInfo(day, dayTemp, nightTemp,dayIcon,nightIcon);
                 tempList.add(j,elem);
             }
