@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         TextView dayName, tempDay, tempNight;
         ImageView dayIcon, nightIcon;
         String day = "";
+        Integer aux;
         for (int i=0;i<5;i++){
             View tr = inflater.inflate(R.layout.table_row, null);
             dayName = (TextView) tr.findViewById(R.id.tvDayName);
@@ -141,7 +142,13 @@ public class MainActivity extends AppCompatActivity {
             }
             dayName.setText(day);
             tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
-            tempDay.setText(tempList.get(i).getDayTemp().toString() + "°C");
+            aux = tempList.get(i).getDayTemp();
+            System.out.println("tempdat: " + aux);
+            if (aux != 99){
+                tempDay.setText(aux.toString().substring(0,2) + "°C");
+            } else {
+                tempDay.setText("");
+            }
             dayIcon = (ImageView) tr.findViewById(R.id.ivDay);
             nightIcon = (ImageView) tr.findViewById(R.id.ivNight);
             URL iconurl = null;
@@ -160,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
             catch (Exception e){
                 e.printStackTrace();
             }
-            tempDay.setText(tempList.get(i).getDayTemp().toString().substring(0,2) + "°C");
             tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
             tempNight.setText(tempList.get(i).getNightTemp().toString().substring(0,2) + "°C");
             tblAddLayout.addView(tr);
@@ -206,9 +212,14 @@ public class MainActivity extends AppCompatActivity {
                 tmp = aux.getString("date");
                 day = getDay(tmp);
                 day = day + ", " + tmp.substring(8, 10) + "/" + tmp.substring(5, 7);
-                dayTemp = aux.getInt("dayTemp");
+                if (aux.has("dayTemp")) {
+                    dayTemp = aux.getInt("dayTemp");
+                    dayIcon = "http://openweathermap.org/img/w/"+aux.getString("dayIcon")+".png";
+                } else {
+                    dayTemp = 99;
+                    dayIcon = "";
+                }
                 nightTemp = aux.getInt("nightTemp");
-                dayIcon = "http://openweathermap.org/img/w/"+aux.getString("dayIcon")+".png";
                 nightIcon = "http://openweathermap.org/img/w/"+aux.getString("nightIcon")+".png";
                 ResponseInfo elem = new ResponseInfo(day, dayTemp, nightTemp,dayIcon,nightIcon);
                 tempList.add(j,elem);
