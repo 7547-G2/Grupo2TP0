@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -56,10 +63,55 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         } else {
             setContentView(R.layout.activity_main);
-            // TODO: Load data from data base
-            loadTableDefault();
+            String cityId = readFromFile(this);
+            String url = BASE_URI + cityId;
+            volleyJsonObjectRequest(url);
+            //loadTableDefault();
         }
 
+    }
+
+    private void writeToFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (Exception e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    private String readFromFile(Context context) {
+
+        String ret = "6559994";
+
+        try {
+            InputStream inputStream = context.openFileInput("config.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }catch (Exception e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
     }
 
     private void loadTableDefault() {
@@ -114,7 +166,9 @@ public class MainActivity extends AppCompatActivity {
             if (CityActivity.selectedCity != null && !CityActivity.selectedCity.equals(""))
                 tvCity.setText(CityActivity.selectedCity);
             //System.out.println("codigo: " + data.getDataString());
-            String url = BASE_URI + data.getDataString();
+            String CityId = String.valueOf(CityActivity.selectedCityId);
+            writeToFile(CityId,this);
+            String url = BASE_URI + CityId;
             volleyJsonObjectRequest(url);
         }
     }
@@ -145,11 +199,18 @@ public class MainActivity extends AppCompatActivity {
             aux = tempList.get(i).getDayTemp();
             System.out.println("tempdat: " + aux);
             if (aux != 99){
-                tempDay.setText(aux.toString().substring(0,2) + "°C");
+                tempDay.setText(aux.toString() + "°C");
             } else {
                 tempDay.setText("");
             }
             dayIcon = (ImageView) tr.findViewById(R.id.ivDay);
+            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
+            aux = tempList.get(i).getNightTemp();
+            if (aux != 99){
+                tempNight.setText(aux.toString() + "°C");
+            } else {
+                tempNight.setText("");
+            }
             nightIcon = (ImageView) tr.findViewById(R.id.ivNight);
             URL iconurl = null;
             try {
@@ -167,8 +228,6 @@ public class MainActivity extends AppCompatActivity {
             catch (Exception e){
                 e.printStackTrace();
             }
-            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
-            tempNight.setText(tempList.get(i).getNightTemp().toString().substring(0,2) + "°C");
             tblAddLayout.addView(tr);
         }
     }
@@ -219,8 +278,13 @@ public class MainActivity extends AppCompatActivity {
                     dayTemp = 99;
                     dayIcon = "";
                 }
-                nightTemp = aux.getInt("nightTemp");
-                nightIcon = "http://openweathermap.org/img/w/"+aux.getString("nightIcon")+".png";
+                if (aux.has("nightTemp")) {
+                    nightTemp = aux.getInt("nightTemp");
+                    nightIcon = "http://openweathermap.org/img/w/" + aux.getString("nightIcon") + ".png";
+                }else {
+                    nightTemp = 99;
+                    nightIcon = "";
+                }
                 ResponseInfo elem = new ResponseInfo(day, dayTemp, nightTemp,dayIcon,nightIcon);
                 tempList.add(j,elem);
             }
