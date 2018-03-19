@@ -44,6 +44,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     int cityCode = 000;
+    String cityId = "3433955";
     String BASE_URI = "https://grupo2-api-backend.herokuapp.com/weather/";
     List<ResponseInfo> tempList = new ArrayList<>();
 
@@ -155,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
             toast.show();
+        } else {
+            String url = BASE_URI + cityId;
+            volleyJsonObjectRequest(url);
         }
     }
 
@@ -196,8 +200,9 @@ public class MainActivity extends AppCompatActivity {
             }
             dayName.setText(day);
             tempDay = (TextView) tr.findViewById(R.id.tvDayTemp);
+            tempNight = (TextView) tr.findViewById(R.id.tvNightTemp);
             aux = tempList.get(i).getDayTemp();
-            System.out.println("tempdat: " + aux);
+            System.out.println("aux: " + aux);
             if (aux != 99){
                 tempDay.setText(aux.toString() + "°C");
             } else {
