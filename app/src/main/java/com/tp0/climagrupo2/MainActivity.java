@@ -275,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
                 aux = jsonInfo.getJSONObject(j);
                 tmp = aux.getString("date");
                 day = getDay(tmp);
+                day = day.substring(0, 1).toUpperCase() + day.substring(1);
                 day = day + ", " + tmp.substring(8, 10) + "/" + tmp.substring(5, 7);
                 if (aux.has("dayTemp")) {
                     dayTemp = aux.getInt("dayTemp");
