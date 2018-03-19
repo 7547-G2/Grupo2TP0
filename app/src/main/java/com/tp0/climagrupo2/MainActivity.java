@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String readFromFile(Context context) {
 
-        String ret = "6559994";
+        String ret = "3433955";
 
         try {
             InputStream inputStream = context.openFileInput("config.txt");
@@ -170,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
             if (CityActivity.selectedCity != null && !CityActivity.selectedCity.equals(""))
                 tvCity.setText(CityActivity.selectedCity);
             //System.out.println("codigo: " + data.getDataString());
-            String CityId = String.valueOf(CityActivity.selectedCityId);
-            writeToFile(CityId,this);
-            String url = BASE_URI + CityId;
+            cityId = String.valueOf(CityActivity.selectedCityId);
+            writeToFile(cityId,this);
+            String url = BASE_URI + cityId;
             volleyJsonObjectRequest(url);
         }
     }
